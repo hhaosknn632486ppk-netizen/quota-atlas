@@ -1,10 +1,13 @@
 'use strict';
 const {app,shell}=require('electron'),path=require('node:path'),fs=require('node:fs');
-const [shortcut,appId,data]=process.argv.slice(2),root=path.resolve(__dirname,'..');
-if(!shortcut||!path.isAbsolute(shortcut)||!shortcut.endsWith('.lnk')||!/^QuotaAtlas\.(Desktop|Validation\.[A-Za-z0-9]+)$/.test(appId||'')||!data||!path.isAbsolute(data))process.exit(2);
-app.setPath('userData',path.join(data,'installer-session'));
+const [requested,appId]=process.argv.slice(2),root=path.resolve(__dirname,'..');
+const programs=path.join(app.getPath('appData'),'Microsoft','Windows','Start Menu','Programs');
+const {resolveShortcutPath}=require('./lib/local-paths.cjs');
+const shortcut=resolveShortcutPath(requested,programs);
+if(!shortcut||!/^QuotaAtlas\.(Desktop|Validation\.[A-Za-z0-9]+)$/.test(appId||''))process.exit(2);
+app.setPath('userData',path.join(app.getPath('temp'),'QuotaAtlas','shortcut-helper-'+process.pid));
 app.whenReady().then(()=>{
- fs.mkdirSync(path.dirname(shortcut),{recursive:true});
+ fs.mkdirSync(programs,{recursive:true});
  const target=path.join(root,'runtime','electron.exe');
  if(!shell.writeShortcutLink(shortcut,'create',{target,args:'"'+__dirname+'"',cwd:root,description:'Quota Atlas',appUserModelId:appId}))throw new Error('Unable to create shortcut');
  const saved=shell.readShortcutLink(shortcut);

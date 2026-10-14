@@ -8,6 +8,11 @@ param(
 $ErrorActionPreference = 'Stop'
 . (Join-Path $PSScriptRoot 'path-safety.ps1')
 if ($AppId -notmatch '^QuotaAtlas\.(Desktop|Validation\.[A-Za-z0-9]+)$' -or $ShortcutName -notmatch '^[a-zA-Z0-9 ._-]+\.lnk$') { throw 'Invalid application identity or shortcut name.' }
+if (-not $NoShortcuts) {
+ $atlasPrograms = Join-Path ([Environment]::GetFolderPath('ApplicationData')) 'Microsoft\Windows\Start Menu\Programs'
+ if ($ShortcutDirectory -and [IO.Path]::GetFullPath($ShortcutDirectory).TrimEnd('\') -ne [IO.Path]::GetFullPath($atlasPrograms).TrimEnd('\')) { throw 'Shortcuts are restricted to the current user Start Menu Programs directory.' }
+ $ShortcutDirectory = $atlasPrograms
+}
 $atlasSource = [IO.Path]::GetFullPath($SourceRoot).TrimEnd('\')
 $atlasInstall = [IO.Path]::GetFullPath($DestinationRoot).TrimEnd('\')
 $atlasData = [IO.Path]::GetFullPath($DataDirectory).TrimEnd('\')
