@@ -1,0 +1,20 @@
+name: Feature request / 功能建议
+description: Explain the problem and desired behavior.
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: User problem / 使用中遇到的问题
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Desired behavior / 希望的行为
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Public documentation or examples / 公开资料或例子
+      description: Share public links only, no keys or private account pages.

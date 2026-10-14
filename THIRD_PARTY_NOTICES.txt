@@ -1,0 +1,18 @@
+Quota Atlas source is licensed under MIT. Third-party components retain their
+own licenses. Quota Atlas is an independent project and is not affiliated with
+or endorsed by the providers whose products it monitors. Product names identify
+their respective services; this project does not grant rights to provider marks.
+
+Electron 44.7.0 - MIT, https://github.com/electron/electron
+The Windows release includes the original runtime/LICENSE and
+runtime/LICENSES.chromium.html supplied in the verified official archive.
+Chromium and other runtime dependencies have their own notices in that file.
+
+Playwright 1.64.0 - Apache-2.0, https://github.com/microsoft/playwright
+Development/testing dependency only; not included in the Windows application ZIP.
+Its transitive dependencies retain the licenses distributed in their npm packages.
+
+Public source adapters read official and community websites. Their text and feeds
+are not relicensed by the project's MIT license. Activity cards retain source links;
+source availability, permissions and API terms remain controlled by their operators.
+The source archive includes only synthetic demo images, with no account screenshots.

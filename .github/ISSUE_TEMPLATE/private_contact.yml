@@ -1,0 +1,14 @@
+name: Request private security contact / 请求安全反馈渠道
+description: Request a private channel without sharing vulnerability details.
+title: Request private security contact
+body:
+  - type: markdown
+    attributes:
+      value: "Please enable private vulnerability reporting or provide a private channel. Do not describe the vulnerability here. / 请维护者启用私密漏洞报告或提供私下渠道，请勿在此描述漏洞。"
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Confirmation / 确认
+      options:
+        - label: This request includes no exploit details, credentials or personal data. / 此请求不含漏洞细节、凭据或个人资料。
+          required: true

@@ -1,0 +1,41 @@
+name: Bug report / 问题反馈
+description: Report reproducible behavior without private account data.
+body:
+  - type: markdown
+    attributes:
+      value: "Do not attach keys, cookies, tokens, raw authenticated responses or a complete profile. Sensitive issues follow SECURITY.md. / 不要上传密钥、Cookie、令牌、原始认证响应或整个资料目录。"
+  - type: input
+    id: version
+    attributes:
+      label: App and Windows versions / 软件和系统版本
+    validations:
+      required: true
+  - type: dropdown
+    id: mode
+    attributes:
+      label: Run mode / 使用方式
+      options:
+        - Installed / 已安装
+        - Portable / 便携
+        - Source / 源码
+        - Demo / 演示
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps, expected result and actual result / 步骤、预期与实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Optional sanitized context / 可选脱敏信息
+      description: Provider and channel, public source URL or error category; no account identifiers.
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy / 隐私
+      options:
+        - label: I removed credentials and personal account data. / 已移除凭据与个人账号资料。
+          required: true

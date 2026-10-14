@@ -1,0 +1,34 @@
+Quota Atlas 0.8.2 - Windows x64 beta
+
+Supported and verified scope / 支持与验证范围
+
+Codex: real local read-only quota connection verified on the development computer.
+WorkBuddy: real local read-only credits connection verified on the same computer.
+These require an installed, signed-in local client. A fresh Windows account with
+no provider sign-in has not yet been independently verified.
+
+DeepSeek / Gemini / Grok API: parsers, credential storage and failure handling
+have fixture-based tests. Real-account authorization is not yet verified.
+Gemini requires the appropriate Cloud project and read permissions; API limits
+must not be described as a known remaining subscription quota.
+
+Claude: local and isolated web connectors are implemented; current official
+subscription-account authorization has not been verified.
+DeepSeek / Gemini / Grok web-page extraction is experimental and can stop working
+when the provider changes its usage page. Unknown values stay unknown.
+
+额度活动覆盖并不完整。当前网络中 OpenAI、Gemini、xAI 的部分官方公告入口
+无法读通；界面会显示连接状态。公开 X 账号直读需要自己的访问权限。
+Official-source access varies by network. Public announcements do not guarantee
+that a specific account qualifies or has received credits.
+
+Use Settings > Send test notification to check this computer. Windows notification
+settings and Do Not Disturb can affect banners. A failed or unconfirmed receipt
+is not silently treated as successful delivery.
+可通过“设置 → 发送测试通知”检查本机；程序不会替你关闭系统勿扰设置。
+
+This beta is unsigned and has no online automatic-update channel. Check the ZIP
+SHA-256 against the separately published checksum from a source you trust.
+The included per-file hashes detect accidental or unchanged-manifest tampering;
+they do not authenticate an attacker who changes both files and the manifest.
+此测试版尚未签名。文件摘要用于核对完整性，不等于软件签名或无漏洞保证。

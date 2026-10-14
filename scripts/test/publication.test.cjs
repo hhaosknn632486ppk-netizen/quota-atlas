@@ -1,0 +1,5 @@
+'use strict';
+const {test}=require('node:test'),assert=require('node:assert/strict');const {problem}=require('../check.cjs');
+test('publication gate rejects private filenames in nested folders',()=>{for(const p of ['.local/state.json','docs/credentials.json','app/installed.json','.env.production','keys/private.pem'])assert(problem(p,''));});
+test('publication gate catches credential-like text without logging its value',()=>{for(const value of ['sk-'+ 'x'.repeat(40),'Bearer '+ 'a'.repeat(45),'github_pat_'+ 'b'.repeat(45),'-----BEGIN '+'PRIVATE KEY-----'])assert.equal(problem('app/main.cjs',value),'Credential-like content');assert.equal(problem('docs/guide.md','Bearer <your-token>, keep it local'),null);});
+test('publication gate catches personal paths but permits portable synthetic examples',()=>{assert.equal(problem('docs/demo.md','C:'+String.fromCharCode(92)+'Users'+String.fromCharCode(92)+'private-person'+String.fromCharCode(92)+'project'),'Personal absolute path');assert.equal(problem('docs/demo.md','https://example.com/demo'),null);});

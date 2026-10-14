@@ -1,0 +1,24 @@
+{
+  "name": "quota-atlas-desktop",
+  "version": "0.8.2",
+  "private": true,
+  "description": "Windows quota and AI provider activity companion",
+  "license": "MIT",
+  "engines": { "node": ">=22.12.0" },
+  "packageManager": "npm@10.9.4",
+  "scripts": {
+    "setup": "node scripts/runtime.cjs",
+    "start": "node scripts/start.cjs",
+    "demo": "node scripts/start.cjs --demo",
+    "test": "node --test app/test/*.test.cjs scripts/test/*.test.cjs",
+    "check": "node scripts/check.cjs",
+    "test:desktop": "node scripts/desktop.cjs",
+    "test:installer": "node scripts/test-installer.cjs",
+    "test:package": "node scripts/test-package.cjs",
+    "screenshots": "node scripts/desktop.cjs --screenshots",
+    "build": "node scripts/build.cjs",
+    "verify:package": "node scripts/verify-package.cjs",
+    "release:source": "node scripts/source.cjs"
+  },
+  "devDependencies": { "playwright": "1.64.0" }
+}

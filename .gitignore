@@ -1,0 +1,35 @@
+# Personal state, authentication and browser profiles
+**/.local/
+**/state.json
+**/state.json.tmp
+**/credentials.json
+**/installed.json
+**/Cookies*
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*.p12
+
+# Generated dependencies, verified runtime cache and build output
+node_modules/
+.cache/
+runtime/
+dist/
+installation-manifest.json
+*.zip
+*.sha256
+*.log
+quota-atlas-export*.json
+preview-*.png
+*-verification*.json
+playwright-report/
+test-results/
+
+# Editors and operating systems
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

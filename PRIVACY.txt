@@ -1,0 +1,37 @@
+Quota Atlas - Local data and network use / 本地数据与网络说明
+
+The public release contains application code, an Electron runtime and documentation.
+It must not contain a user's .local folder, account state, keys, browser sessions,
+logs, exports, screenshots or developer test data.
+公开包不包含开发者或其他用户的账户、凭据、浏览器会话、导出或测试数据。
+
+Your account and settings data stays in the data directory on your computer.
+An installed copy uses %LOCALAPPDATA%\QuotaAtlas\data by default; a portable copy
+uses its own .local folder. There is no developer-operated analytics endpoint.
+账户记录和设置保存在本机；没有开发者自建的分析或遥测服务。
+
+Codex reads use the official local app-server. WorkBuddy reads use the local client.
+Enabled provider API connections contact the relevant provider directly.
+Saved API credentials use Electron safeStorage / Windows DPAPI. If encryption is
+unavailable, the app does not fall back to saving plaintext credentials.
+只有在你选择保存时，API 凭据才通过本机加密机制持久保存；没有明文保存后备方案。
+
+Web sign-in takes place in an isolated Electron browser session. That session's
+cookies and caches are local personal data. Quota extraction uses explicitly
+labelled usage fields; chat text is not used to compute quotas.
+网页登录的会话与缓存属于你的个人数据；分享文件时不要包含数据目录。
+
+Public announcement, policy and community-feed checks contact external websites.
+Those websites receive ordinary network-request information, such as your IP.
+Personal quota snapshots and provider credentials are not sent to those feeds.
+Public X monitoring is optional and uses the API access you explicitly configure.
+官方与社区资讯检查会访问外部网站，但不会向资讯源上传个人额度或服务商凭据。
+
+An explicit test notification is labelled as a test. Its local receipt is not
+evidence of a provider promotion or a human reading the message.
+测试通知不代表运营商活动；系统显示回执也不等于用户已经阅读。
+
+Uninstalling preserves your account data for recovery or reinstallation.
+To remove it permanently, first close the app and remove the data directory
+you actually used. This is separate from removing the application files.
+卸载默认保留个人数据；如需彻底移除，关闭程序后自行删除实际使用的数据目录。

@@ -1,0 +1,12 @@
+{
+  "name": "quota-atlas",
+  "productName": "Quota Atlas · 额度指南",
+  "version": "0.8.2",
+  "private": true,
+  "main": "main.cjs",
+  "description": "Local Windows quota and provider event companion",
+  "scripts": {
+    "test": "node --test test/*.test.cjs"
+  },
+  "license": "MIT"
+}
