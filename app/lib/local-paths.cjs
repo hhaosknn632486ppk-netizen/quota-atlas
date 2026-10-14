@@ -59,4 +59,35 @@ function resolveShortcutPath(requested, programs) {
   return key(path.resolve(requested)) === key(target) ? target : null;
 }
 
-module.exports = { codexRoots, resolveCodexCandidate, resolveShortcutPath };
+function discoverCodexCandidates(roots = codexRoots()) {
+  const found = new Set();
+  let visited = 0;
+  for (const root of roots) {
+    function walk(dir, depth) {
+      if (depth > 7 || visited > 4096) return;
+      let entries;
+      try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+      for (const entry of entries) {
+        if (++visited > 4096) return;
+        // Filesystem discovery supplies candidates. Environment/PATH values only select them.
+        const name = path.basename(entry.name);
+        if (name !== entry.name || name === '.' || name === '..' || entry.isSymbolicLink()) continue;
+        const candidate = path.join(dir, name);
+        if (entry.isFile() && name.toLowerCase() === 'codex.exe') {
+          const accepted = resolveCodexCandidate(candidate, [root]);
+          if (accepted) found.add(accepted);
+        } else if (entry.isDirectory()) walk(candidate, depth + 1);
+      }
+    }
+    walk(root, 0);
+  }
+  return [...found].sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
+}
+
+function selectCodexCandidate(preferred, candidates) {
+  if (typeof preferred !== 'string' || !path.isAbsolute(preferred)) return null;
+  const selected = candidates.find(candidate => key(candidate) === key(path.resolve(preferred)));
+  return selected || null;
+}
+
+module.exports = { codexRoots, resolveCodexCandidate, resolveShortcutPath, discoverCodexCandidates, selectCodexCandidate };

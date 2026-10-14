@@ -2,11 +2,12 @@
 const fs=require('node:fs');const path=require('node:path');const os=require('node:os');const {spawn,execFile}=require('node:child_process');const {createInterface}=require('node:readline');
 const I=require('../ui/i18n.js');function codedError(key,locale){const e=new Error(I.t(locale||'zh-CN',key));e.code=key;return e;}
 const {normalizeCodex}=require('./domain.cjs');
-const {resolveCodexCandidate}=require('./local-paths.cjs');
+const {discoverCodexCandidates,selectCodexCandidate}=require('./local-paths.cjs');
 async function findCodex(){
-  const configured=resolveCodexCandidate(process.env.QUOTA_ATLAS_CODEX);if(configured)return configured;
-  const results=await new Promise(resolve=>execFile('where.exe',['codex.exe'],{windowsHide:true,shell:false,timeout:5000},(e,out)=>resolve(e?[]:out.trim().split(/\r?\n/))));for(const result of results){const candidate=resolveCodexCandidate(result);if(candidate)return candidate;}
-  const root=path.join(os.homedir(),'AppData','Local','OpenAI','Codex','bin');try{for(const entry of fs.readdirSync(root).reverse()){const candidate=resolveCodexCandidate(path.join(root,entry,'codex.exe'));if(candidate)return candidate;}}catch{}return null;
+  const candidates=discoverCodexCandidates();
+  const configured=selectCodexCandidate(process.env.QUOTA_ATLAS_CODEX,candidates);if(configured)return configured;
+  const results=await new Promise(resolve=>execFile('where.exe',['codex.exe'],{windowsHide:true,shell:false,timeout:5000},(e,out)=>resolve(e?[]:out.trim().split(/\r?\n/))));for(const result of results){const candidate=selectCodexCandidate(result,candidates);if(candidate)return candidate;}
+  return candidates[0]||null;
 }
 class CodexClient{
   constructor(){this.child=null;this.pending=new Map();this.nextId=0;this.starting=null;}
