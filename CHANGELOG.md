@@ -7,6 +7,7 @@
 - Bound each article request independently so slow requests do not consume the time available to every later article.
 - Read publication timestamps from article time elements and either metadata attribute order.
 - Support xAI's marked article sections without treating navigation, arbitrary page sections or footer promotions as article content.
+- Keep separators around discarded HTML blocks so text fragments cannot reassemble into tags or misleading activity keywords.
 - Show upstream check times, verified article counts and explicit access-denied reasons in all four languages.
 - Keep genuinely stale or undated feeds out of alerts and back off repeated unsuccessful checks.
 - Add official xAI API and consumer usage documentation as change monitors. These do not replace news coverage or imply a new quota grant.

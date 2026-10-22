@@ -22,7 +22,7 @@ const SOURCES=[
  {id:'deepseek-policy',name:'DeepSeek 价格规则',url:'https://api-docs.deepseek.com/quick_start/pricing',providers:['deepseek'],type:'official',format:'policy'}
 ];
 function fromLimitReset(raw){const events=[];for(const [provider,product] of Object.entries(raw.products||{})){for(const e of [product.latestEvent,product.upcomingEvent]){if(!e)continue;events.push(makeEvent({id:e.id,provider,kind:e.kind==='upcoming'?'teaser':e.kind==='banked-reset'?'banked':e.kind,title:e.title,detail:e.text,campaignId:e.campaignId,relatedSourceUrl:e.relatedSourceUrl,precision:e.precision,sourceUrl:e.sourceUrl,announcedAt:e.announcedAt,effectiveAt:e.effectiveAt,expiresAt:e.expiresAt,plans:e.plans,channels:e.channels,region:e.region,claimRequired:e.claimRequired,conditionsUnparsed:e.conditionsUnparsed,scope:e.scope||'适用范围未说明',phase:e.phase||(e.kind==='upcoming'?'pending':'announced'),source:'LimitReset',sourceCheckedAt:raw.updatedAt}));}}return events.filter(Boolean);}
-function policyText(html){return html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,'').replace(/<[^>]+>/g,' ').replace(/&[a-z#0-9]+;/gi,' ').replace(/\s+/g,' ').trim().slice(0,150000);}
+function policyText(html){return html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,' ').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&[a-z#0-9]+;/gi,' ').replace(/\s+/g,' ').trim().slice(0,150000);}
 function feedFreshness(source,raw,now){
  // A snapshot's check time is different from the date of its last announcement.
  const snapshot=source.format==='observatory';
@@ -60,7 +60,7 @@ async function readPublic(url,previous,fetcher,signal){let target=new URL(url),r
  }throw new Error('Redirect unavailable');}
 function annotate(result,previous,now,verifiedArticles=new Set()){const at=new Date(now).toISOString();result.events=(result.events||[]).map(e=>{const old=(previous?.events||[]).find(p=>p.id===e.id||p.sourceUrl===e.sourceUrl&&p.provider===e.provider);const revision=hash(JSON.stringify([e.kind,e.phase,e.effectiveAt,e.expiresAt,e.plans,e.channels,e.claimRequired,e.detail]));return {...e,sourceStale:!(result.status==='ok'||result.status==='partial'&&verifiedArticles.has(e.sourceUrl)),sourceCheckedAt:at,sourceRoute:e.sourceRoute|| (result.type==='community'?'aggregated':'direct'),firstSeenAt:old?.firstSeenAt||at,lastChangedAt:old?.revision===revision?old.lastChangedAt:at,revision};});return result;}
 async function monitorSource(source,previous={},fetcher=fetch,now=Date.now(),options={}){
- let requestAccessible=false;const checkedAt=new Date(now).toISOString(),interval=source.intervalMs|| (source.type==='official'?5:10)*60000,parserVersion=9,verifiedArticles=new Set();
+ let requestAccessible=false;const checkedAt=new Date(now).toISOString(),interval=source.intervalMs|| (source.type==='official'?5:10)*60000,parserVersion=10,verifiedArticles=new Set();
  if(source.format==='x-api'&&!options.token)return {...source,status:'disabled',noteKey:'socialNotConfigured',checkedAt:null,events:[],nextCheckAt:null};
  try{
   let result;
