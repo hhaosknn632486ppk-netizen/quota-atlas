@@ -35,8 +35,9 @@ is configured. Code signing and secure update delivery remain future work.
 ## Real-world validation still needed
 
 Controlled native notification tests reported display and presence in Windows history;
-a human-visible banner/click and a live announcement-to-personal-alert chain remain
-unverified. Observe these during beta without manufacturing a real provider activity.
+the tester also confirmed a visible banner on the development computer. Real click
+navigation and a live announcement-to-personal-alert chain remain unverified.
+Observe these during beta without manufacturing a real provider activity.
 Also validate real API accounts, source access, overnight sleep and network recovery.
 Record original publish time, discovery time, eligibility interpretation, request time
 and OS receipt separately; never infer human reading from an OS receipt.

@@ -35,9 +35,31 @@ function explicitTimes(text){const s=String(text||'');const stamps=[...s.matchAl
  return {effectiveAt,expiresAt};
 }
 function activityRecords(records,source){return records.flatMap(r=>{const text=r.text?.includes(r.title||'')?r.text:(r.title||'')+'\n'+(r.text||'');const type=classify(text);if(!type||r.pageMatched===false||!isoDate(r.publishedAt)||!r.url)return [];const providers=source.providers.length===1?source.providers:source.providers.filter(p=>new RegExp('\\b'+p+'\\b','i').test(text));if(!providers.length)return [];return providers.map(provider=>{const interpreted=interpretation(text,provider);return {provider,...type,...interpreted,...explicitTimes(text),title:r.title||text.split('\n')[0].slice(0,180),detail:r.text||text,originalText:text.slice(0,6000),sourceUrl:r.url,announcedAt:r.publishedAt,publishedPrecision:r.publishedPrecision||null,evidence:source.type==='official'?'official':'public',source:source.name,scope:interpreted.plans.length?interpreted.plans.join(' / '):'适用范围未说明',interpretation:'rules',sourceRoute:'direct',campaignId:r.campaignId||null,identityUrl:source.identityUrl||null};});});}
-function articleRecords(html,url){const text=content(html);if(!text)throw new Error('Article structure unavailable');let publishedAt=null,publishedValue=null;
+function articleRecords(html,url){let text=content(html);
+ // xAI's article template uses a marked section rather than main/article.
+ // Keep this fallback tied to its official host and article markers.
+ if(!text&&new URL(url).hostname==='x.ai'&&/^\/news\/[^/]+\/?$/.test(new URL(url).pathname)){
+  let depth=0,start=0;
+  for(const tag of String(html).matchAll(/<\/?section\b[^>]*>/gi)){
+   if(!/^<\//.test(tag[0])){if(depth===0)start=tag.index;depth++;}
+   else if(depth>0&&--depth===0){const section=String(html).slice(start,tag.index+tag[0].length);if(/\bdata-article-top=["']true["']/i.test(section)&&/<h1\b[^>]*\bid=["']post-title-navigator-anchor["']/i.test(section)){text=readable(section);break;}}
+  }
+ }
+ if(!text)throw new Error('Article structure unavailable');let publishedAt=null,publishedValue=null;
  for(const m of String(html).matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)){try{const parsed=JSON.parse(m[1]);const visit=x=>{if(!x||typeof x!=='object')return;if(x.datePublished&&!publishedAt){publishedAt=isoDate(x.datePublished);publishedValue=String(x.datePublished);}if(Array.isArray(x))x.forEach(visit);if(x['@graph'])visit(x['@graph']);};visit(parsed);}catch{}}
  const meta=html.match(/<meta[^>]*(?:property|name)=["']article:published_time["'][^>]*content=["']([^"']+)/i);if(!publishedAt&&meta){publishedAt=isoDate(meta[1]);publishedValue=meta[1];}
+ if(!publishedAt){
+  for(const tag of String(html).matchAll(/<meta\b[^>]*>/gi)){
+   if(!/(?:property|name)=["']article:published_time["']/i.test(tag[0]))continue;
+   const value=tag[0].match(/\bcontent=["']([^"']+)/i)?.[1];if(isoDate(value)){publishedAt=isoDate(value);publishedValue=value;break;}
+  }
+ }
+ if(!publishedAt){
+  const body=String(html).match(/<(?:main|article)\b[^>]*>([\s\S]*?)<\/(?:main|article)>/i)?.[1]||'';
+  const header=body.split(/<h2\b|<footer\b|<nav\b/i)[0];
+  const value=header.match(/<time\b[^>]*\bdatetime=["']([^"']+)/i)?.[1];
+  if(isoDate(value)){publishedAt=isoDate(value);publishedValue=value;}
+ }
  const date=text.split(/\n/).slice(0,12).map(line=>line.trim().match(/^(?:(?:Published|发布日期)[:：]?\s*)?((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},?\s+20\d{2}|20\d{2}[/-]\d{1,2}[/-]\d{1,2})$/i)).find(Boolean);publishedAt ||= isoDate(date?.[1]);
  let publicationBasis=publishedValue?'metadata':date?'body':null;
  // Docusaurus dates may live only in the active article's navigation label.

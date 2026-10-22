@@ -24,7 +24,7 @@ All screenshots use built-in demo data. They are not provider announcements.
 | DeepSeek, Gemini, Grok web usage | Experimental page observation | Only explicitly labelled values; provider page changes can break extraction |
 | Public announcements | Official pages, rules and community feeds | Coverage is incomplete; access failures and uncertainty are shown |
 | Optional public X accounts | Adapter tested with fixtures | Requires your own X API access; real authorization and any charges are your responsibility |
-| Windows notifications | Controlled test received a native display receipt and appeared in notification history | Human-visible banner, real click and live-campaign end-to-end delivery remain unverified |
+| Windows notifications | Controlled test received a native display receipt, appeared in notification history, and its banner was confirmed by the tester | Real click navigation and live-campaign end-to-end delivery remain unverified; display depends on Windows settings |
 
 Supported UI languages: Simplified Chinese, English, Japanese and Korean.
 Original announcements retain their original language. Unknown quota stays unknown.
