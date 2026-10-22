@@ -1,7 +1,9 @@
 'use strict';
 // Deliberately conservative: extract explicit statements; uncertain conditions stay uncertain.
 function decode(s){return String(s||'').replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g,'$1').replace(/&#(x[\da-f]+|\d+);/gi,(_,n)=>{const c=n[0].toLowerCase()==='x'?parseInt(n.slice(1),16):Number(n);return c>0&&c<=0x10ffff?String.fromCodePoint(c):' ';}).replace(/&(amp|lt|gt|quot|apos|nbsp);/g,(_,n)=>({amp:'&',lt:'<',gt:'>',quot:'"',apos:"'",nbsp:' '})[n]);}
-function readable(html){return decode(String(html).replace(/<(script|style|nav|header|footer|svg)\b[^>]*>[\s\S]*?<\/\1>/gi,'').replace(/<(?:p|div|h[1-6]|li|tr|br|section)\b[^>]*>/gi,'\n').replace(/<[^>]+>/g,' ')).replace(/[ \t]+/g,' ').replace(/\n\s*\n/g,'\n').trim();}
+// A separator prevents fragments on either side of a removed block from joining.
+// This extracts text; the UI must still escape it before HTML rendering.
+function readable(html){return decode(String(html).replace(/<(script|style|nav|header|footer|svg)\b[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<(?:p|div|h[1-6]|li|tr|br|section)\b[^>]*>/gi,'\n').replace(/<[^>]+>/g,' ')).replace(/[ \t]+/g,' ').replace(/\n\s*\n/g,'\n').trim();}
 function content(html){const main=String(html).match(/<main\b[^>]*>([\s\S]*?)<\/main>/i)?.[1]||String(html).match(/<article\b[^>]*>([\s\S]*?)<\/article>/i)?.[1];return main?readable(main):null;}
 function isoDate(value){if(!value)return null;const s=String(value),n=Date.parse(!/T\d{2}|:\d{2}/.test(s)?s+' UTC':s);return Number.isFinite(n)?new Date(n).toISOString():null;}
 function explicitChannels(text,provider){const api=/\bAPI\b|开发者平台|API\s*余额/i.test(text),sub=/\b(?:subscribers?|subscription|Claude Code|ChatGPT|Codex|Pro|Max|Plus|Business)\b|订阅|网页版|会员/.test(text);if(api&&sub)return null;if(api)return ['api'];if(sub||['codex','chatgpt','claude','workbuddy','cursor','copilot'].includes(provider))return ['subscription','web'];return null;}

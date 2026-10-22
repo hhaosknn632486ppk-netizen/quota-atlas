@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),assert=require('node:assert/strict');
-const {monitorSource,SOURCES,readPublic}=require('../lib/sources.cjs'),A=require('../lib/announcements.cjs'),Alerts=require('../lib/alert-policy.cjs'),I=require('../ui/i18n.js');
+const {monitorSource,SOURCES,readPublic,policyText}=require('../lib/sources.cjs'),A=require('../lib/announcements.cjs'),Alerts=require('../lib/alert-policy.cjs'),I=require('../ui/i18n.js');
 const now=Date.parse('2026-10-19T12:00:00Z'),stamp=delta=>new Date(now+delta).toISOString();
 const source=id=>SOURCES.find(s=>s.id===id),json=body=>async()=>new Response(JSON.stringify(body));
 const article=(title='Bonus credits')=>'<main><h1>'+title+'</h1><p>October 19, 2026</p><p>All Pro users receive free credits.</p></main>';
@@ -9,6 +9,15 @@ const news=source('anthropic-news'),listing='<main><a href="/news/one">One</a><a
 test('recent Observatory snapshot stays fresh even when its last announcement is old',async()=>{
  const r=await monitorSource(source('observatory'),{},json({checkedAt:stamp(-60000),updatedAt:stamp(-3*86400000),dataHealth:{overall:'ok',stale:false},viewModel:{}}),now);
  assert.equal(r.status,'ok');assert.equal(r.freshness,'fresh');assert.equal(r.verifiedAt,stamp(-60000));assert.equal(r.updatedAt,stamp(-3*86400000));
+});
+test('discarded HTML blocks cannot join fragments into a bonus announcement',()=>{
+ const text=A.readable('bon<script>ignored tracker</script>us credits');assert.equal(text,'bon us credits');assert.equal(A.classify(text),null);
+});
+test('plain policy text keeps word boundaries around removed scripts and styles',()=>{
+ assert.equal(policyText('up<style>ignored</style>date<script>ignored</script>limits'),'up date limits');
+});
+test('nested malformed HTML does not rebuild script or style tags across removed blocks',()=>{
+ for(const html of ['<scrip<script>discard</script>t>alert(1)</script>','<sty<style>discard</style>le>body</style>'])for(const extract of [A.readable,policyText])assert(!/<(?:script|style)\b/i.test(extract(html)));
 });
 test('Observatory generated health check can establish freshness without an announcement',async()=>{
  const r=await monitorSource(source('observatory'),{},json({updatedAt:stamp(-3*86400000),dataHealth:{overall:'ok',generatedAt:stamp(-1000)},viewModel:{}}),now);assert.equal(r.status,'ok');
