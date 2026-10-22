@@ -1,7 +1,7 @@
 {
   "name": "quota-atlas",
   "productName": "Quota Atlas · 额度指南",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "private": true,
   "main": "main.cjs",
   "description": "Local Windows quota and provider event companion",

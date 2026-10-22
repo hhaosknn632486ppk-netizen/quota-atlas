@@ -1,4 +1,4 @@
-Quota Atlas 0.8.2 - Windows x64 beta
+Quota Atlas 0.8.3 - Windows x64 beta
 
 Supported and verified scope / 支持与验证范围
 

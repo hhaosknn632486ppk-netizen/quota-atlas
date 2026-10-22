@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.8.3 — activity-source reliability beta
+
+- Separate upstream snapshot checks from the last announcement date, avoiding false stale warnings when a healthy source has no new announcements.
+- Verify news articles individually so one unavailable article does not block alerts from other verified articles; retain stale cache and retry-after limits for failed articles.
+- Bound each article request independently so slow requests do not consume the time available to every later article.
+- Read publication timestamps from article time elements and either metadata attribute order.
+- Support xAI's marked article sections without treating navigation, arbitrary page sections or footer promotions as article content.
+- Show upstream check times, verified article counts and explicit access-denied reasons in all four languages.
+- Keep genuinely stale or undated feeds out of alerts and back off repeated unsuccessful checks.
+- Add official xAI API and consumer usage documentation as change monitors. These do not replace news coverage or imply a new quota grant.
+
 ## 0.8.2 — public beta preparation
 
 - Add an independent source layout, MIT license and third-party notices.
